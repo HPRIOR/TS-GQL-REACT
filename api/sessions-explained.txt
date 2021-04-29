@@ -1,0 +1,14 @@
+
+1) User logs in and this code is hit -> req.session.userId = user.id
+
+This saves a key value pair to redis:
+
+sess: asdasfwqdwafasf -> {userId: 1}
+
+2) express-session middleware will set cookie on browser (hashed value which represents key in redis store
+ (Hashed w/ secret))
+
+
+3) When a user make a request this cookie is sent to to the server and deciphered
+
+A request is made to redis if the key exists then good to go
