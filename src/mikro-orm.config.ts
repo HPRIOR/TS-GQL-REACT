@@ -3,13 +3,14 @@ import {__prod__} from "./constants";
 import {MikroORM} from "@mikro-orm/core";
 const path = require('path');
 import {dbPass} from "./secrets";
+import {User} from "./entities/User";
 
 export default {
     migrations:{
         path: path.join(__dirname, './migrations'),
         pattern: /^[\w-]+\d+\.[tj]s$/,
     },
-    entities:[Post],
+    entities:[Post, User],
     dbName: 'lireddit',
     user: 'postgres',
     password: dbPass,
