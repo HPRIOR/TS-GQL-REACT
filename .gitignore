@@ -34,3 +34,5 @@ api/src/secrets.ts
 
 # vercel
 */.vercel
+
+*/yarn-error.log
