@@ -2,7 +2,8 @@ api/dist
 */node_modules
 api/src/secrets.ts
 .idea/
-
+api/dump.rdb
+*/yarn-error.log
 
 # local env files
 */.env.local
