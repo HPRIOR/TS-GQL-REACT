@@ -11,8 +11,7 @@ import session from 'express-session';
 import connectRedis from 'connect-redis';
 import {sessionSecret} from "./secrets";
 import {__prod__} from './constants';
-import {ContextType} from "./types";
-
+import cors from 'cors'
 
 const main = async () => {
     // orm for programmatic interface with db
@@ -25,6 +24,12 @@ const main = async () => {
 
     const RedisStore = connectRedis(session);
     const redisClient = redis.createClient();
+
+    // apply cors middleware to all routes
+    app.use(cors({
+        origin:'http://localhost:3000',
+        credentials: true
+    }));
 
     // order is important for middleware - session needs be to be used within apollo server so it needs to come first
     // this middleware stores session cookies in a redis store
@@ -61,7 +66,7 @@ const main = async () => {
          the db orm. we can also pass through request and response objects. This allows us to determine session cookies
          which are resolved previous middleware above (app.use(session...) see sessions-explained.txt
         */
-        context: ({req, res}): ContextType => ({
+        context: ({req, res}) => ({
             em: orm.em,
             req,
             res
@@ -69,7 +74,7 @@ const main = async () => {
     });
 
     // add gql as middleware
-    apolloServer.applyMiddleware({app});
+    apolloServer.applyMiddleware({app, cors:false});
 
     app.listen(4000, () => {
         console.log('server started on http://localhost:4000/ \n' +
