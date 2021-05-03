@@ -1,56 +1,51 @@
-import {Arg, Ctx, Int, Mutation, Query, Resolver} from "type-graphql";
+import {Arg, Int, Mutation, Query, Resolver} from "type-graphql";
 import {Post} from "../entities/Post";
 import {ContextType} from "../types";
 
 @Resolver()
 export class PostResolver {
     @Query(() => [Post])
-    posts(@Ctx() {em}: ContextType): Promise<Post[]> {
-        return em.find(Post, {});
+    posts(): Promise<Post[]> {
+        return Post.find();
     }
 
     @Query(() => Post, {nullable: true})
     post(
-        @Arg('id', () => Int) id: number,
-        @Ctx() {em}: ContextType
-    ): Promise<Post | null> {
-        return em.findOne(Post, {id});
+        @Arg('id', () => Int) id: number
+    ): Promise<Post | undefined> {
+        return Post.findOne(id);
     }
 
     @Mutation(() => Post)
     async createPost(
         @Arg('title', () => String) title: string,
-        @Ctx() {em}: ContextType
     ): Promise<Post> {
-        let post = em.create(Post, {title})
-        await em.persistAndFlush(post)
-        return post;
+        return Post.create({title}).save();
     }
 
     @Mutation(() => Post, {nullable: true})
     async updatePost(
         @Arg('id', () => Int) id: number,
         @Arg('title', () => String, {nullable: true}) title: string,
-        @Ctx() {em}: ContextType
-    ): Promise<Post | null> {
-        const post = await em.findOne(Post, {id});
-        if (!post) return null;
+    ): Promise<Post | undefined> {
+        const post = await Post.findOne(id);
+        if (!post) return undefined;
         if(typeof title !== 'undefined'){
-            post.title = title;
-            await em.persistAndFlush(post)
+            await Post.update({id}, {title});
         }
         return post;
     }
 
-    @Mutation(() => Post, {nullable: true})
+    @Mutation(() => Boolean, {nullable: true})
     async deletePost(
         @Arg('id', () => Int) id: number,
-        @Ctx() {em}: ContextType
-    ): Promise<Post | null> {
-        const post = await em.findOne(Post, {id});
-        if (!post) return null;
-        await em.nativeDelete(Post, {id})
-        return post;
+    ): Promise<boolean> {
+        const post = await Post.findOne(id);
+        if (post){
+            await Post.delete(id);
+            return true;
+        }
+        return false;
     }
 
 }
