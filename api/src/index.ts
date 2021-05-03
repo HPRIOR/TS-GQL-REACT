@@ -1,23 +1,33 @@
 import 'reflect-metadata';
-import {MikroORM} from "@mikro-orm/core";
 import express from 'express';
 import {ApolloServer} from "apollo-server-express";
 import {buildSchema} from "type-graphql";
-import mikroConfig from './mikro-orm.config';
 import {PostResolver} from "./resolvers/postResolver";
 import {UserResolver} from "./resolvers/userResolver";
 import redis from 'redis';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
-import {sessionSecret} from "./secrets";
+import {dbPass, sessionSecret} from "./secrets";
 import {__prod__} from './constants';
 import cors from 'cors'
+import {createConnection} from "typeorm";
+import {User} from "./entities/User";
+import {Post} from "./entities/Post";
+
 
 const main = async () => {
-    // orm for programmatic interface with db
-    const orm = await MikroORM.init(mikroConfig);
-    // for any new or changed entities, create sql for creating or updating databases
-    await orm.getMigrator().up();
+
+    const conn = await createConnection({
+        type: 'postgres',
+        database:'lireddit2'	,
+        username:'postgres',
+        password: dbPass,
+        logging:true,
+        synchronize: true,
+        entities: [Post, User]
+    });
+
+
 
     // setup server
     const app = express();
@@ -30,6 +40,7 @@ const main = async () => {
         origin:'http://localhost:3000',
         credentials: true
     }));
+
 
     // order is important for middleware - session needs be to be used within apollo server so it needs to come first
     // this middleware stores session cookies in a redis store
@@ -67,7 +78,6 @@ const main = async () => {
          which are resolved previous middleware above (app.use(session...) see sessions-explained.txt
         */
         context: ({req, res}) => ({
-            em: orm.em,
             req,
             res
         })
