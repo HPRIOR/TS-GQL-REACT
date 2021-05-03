@@ -1,8 +1,9 @@
 import {ChakraProvider} from "@chakra-ui/react";
-import '../styles/globals.css'
+import '../styles/globals.css';
 import {Provider, createClient, dedupExchange, fetchExchange} from "urql";
 import {NavBar} from "../components/NavBar";
 import {cacheExchange} from "@urql/exchange-graphcache";
+import {TestLoginDocument} from "../generatedTypes/graphql";
 
 const client = createClient(
     {
@@ -10,9 +11,27 @@ const client = createClient(
         fetchOptions: {
             credentials: "include"
         },
-        exchanges: [dedupExchange, cacheExchange({}), fetchExchange]
-    },
-)
+        exchanges: [
+            dedupExchange,
+            cacheExchange({
+                updates: {
+                    Mutation: {
+                        login: (result: any, args, cache, info) => {
+                            cache.updateQuery({query: TestLoginDocument}, (data) => {
+                                if (result.login.errors) {
+                                    return result;
+                                } else {
+                                    return {testLogin: result.login.user};
+                                }
+                            });
+                        }
+                    }
+                }
+            }),
+            fetchExchange
+        ]
+    }
+);
 
 function MyApp({Component, pageProps}: any) {
     return (
@@ -23,10 +42,8 @@ function MyApp({Component, pageProps}: any) {
                 </NavBar>
             </ChakraProvider>
         </Provider>
-    )
-
+    );
 
 }
 
-
-export default MyApp
+export default MyApp;
