@@ -23,9 +23,10 @@ export type Mutation = {
   __typename?: 'Mutation';
   createPost: Post;
   updatePost?: Maybe<Post>;
-  deletePost?: Maybe<Post>;
+  deletePost?: Maybe<Scalars['Boolean']>;
   register: UserResponse;
   login: UserResponse;
+  logout: Scalars['Boolean'];
 };
 
 
@@ -77,7 +78,7 @@ export type QueryPostArgs = {
 export type User = {
   __typename?: 'User';
   id: Scalars['Int'];
-  createAt: Scalars['String'];
+  createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
   username: Scalars['String'];
 };
@@ -92,6 +93,34 @@ export type UsernamePasswordInput = {
   username: Scalars['String'];
   password: Scalars['String'];
 };
+
+export type LoginMutationVariables = Exact<{
+  username: Scalars['String'];
+  password: Scalars['String'];
+}>;
+
+
+export type LoginMutation = (
+  { __typename?: 'Mutation' }
+  & { login: (
+    { __typename?: 'UserResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'message'>
+    )>>, user?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'username'>
+    )> }
+  ) }
+);
+
+export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LogoutMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'logout'>
+);
 
 export type RegisterMutationVariables = Exact<{
   username: Scalars['String'];
@@ -113,7 +142,43 @@ export type RegisterMutation = (
   ) }
 );
 
+export type TestLoginQueryVariables = Exact<{ [key: string]: never; }>;
 
+
+export type TestLoginQuery = (
+  { __typename?: 'Query' }
+  & { testLogin?: Maybe<(
+    { __typename?: 'User' }
+    & Pick<User, 'username' | 'id'>
+  )> }
+);
+
+
+export const LoginDocument = gql`
+    mutation Login($username: String!, $password: String!) {
+  login(options: {username: $username, password: $password}) {
+    errors {
+      message
+    }
+    user {
+      username
+    }
+  }
+}
+    `;
+
+export function useLoginMutation() {
+  return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
+};
+export const LogoutDocument = gql`
+    mutation Logout {
+  logout
+}
+    `;
+
+export function useLogoutMutation() {
+  return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
+};
 export const RegisterDocument = gql`
     mutation Register($username: String!, $password: String!) {
   register(options: {username: $username, password: $password}) {
@@ -131,4 +196,16 @@ export const RegisterDocument = gql`
 
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
+};
+export const TestLoginDocument = gql`
+    query TestLogin {
+  testLogin {
+    username
+    id
+  }
+}
+    `;
+
+export function useTestLoginQuery(options: Omit<Urql.UseQueryArgs<TestLoginQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<TestLoginQuery>({ query: TestLoginDocument, ...options });
 };
