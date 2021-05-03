@@ -11,8 +11,9 @@ type FieldError {
 
 type Mutation {
     createPost(title: String!): Post!
-    deletePost(id: Int!): Post
+    deletePost(id: Int!): Boolean
     login(options: UsernamePasswordInput!): UserResponse!
+    logout: Boolean!
     register(options: UsernamePasswordInput!): UserResponse!
     updatePost(id: Int!, title: String): Post
 }
@@ -31,7 +32,7 @@ type Query {
 }
 
 type User {
-    createAt: String!
+    createdAt: String!
     id: Int!
     updatedAt: String!
     username: String!

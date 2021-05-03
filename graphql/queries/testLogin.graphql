@@ -1,0 +1,6 @@
+query TestLogin {
+    testLogin {
+        username
+        id
+    }
+}
