@@ -17,7 +17,7 @@ const client = createClient(
                 updates: {
                     Mutation: {
                         login: (result: any, args, cache, info) => {
-                            cache.updateQuery({query: TestLoginDocument}, (data) => {
+                            cache.updateQuery({query: TestLoginDocument}, () => {
                                 if (result.login.errors) {
                                     return result;
                                 } else {
