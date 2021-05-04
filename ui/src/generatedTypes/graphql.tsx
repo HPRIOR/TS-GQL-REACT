@@ -94,6 +94,11 @@ export type UsernamePasswordInput = {
   password: Scalars['String'];
 };
 
+export type RegularUserFragment = (
+  { __typename?: 'User' }
+  & Pick<User, 'id' | 'username'>
+);
+
 export type LoginMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
@@ -109,7 +114,7 @@ export type LoginMutation = (
       & Pick<FieldError, 'message'>
     )>>, user?: Maybe<(
       { __typename?: 'User' }
-      & Pick<User, 'username'>
+      & RegularUserFragment
     )> }
   ) }
 );
@@ -137,7 +142,7 @@ export type RegisterMutation = (
       & Pick<FieldError, 'message'>
     )>>, user?: Maybe<(
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'username' | 'updatedAt'>
+      & RegularUserFragment
     )> }
   ) }
 );
@@ -149,11 +154,16 @@ export type TestLoginQuery = (
   { __typename?: 'Query' }
   & { testLogin?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'username' | 'id'>
+    & RegularUserFragment
   )> }
 );
 
-
+export const RegularUserFragmentDoc = gql`
+    fragment RegularUser on User {
+  id
+  username
+}
+    `;
 export const LoginDocument = gql`
     mutation Login($username: String!, $password: String!) {
   login(options: {username: $username, password: $password}) {
@@ -161,11 +171,11 @@ export const LoginDocument = gql`
       message
     }
     user {
-      username
+      ...RegularUser
     }
   }
 }
-    `;
+    ${RegularUserFragmentDoc}`;
 
 export function useLoginMutation() {
   return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
@@ -186,13 +196,11 @@ export const RegisterDocument = gql`
       message
     }
     user {
-      id
-      username
-      updatedAt
+      ...RegularUser
     }
   }
 }
-    `;
+    ${RegularUserFragmentDoc}`;
 
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
@@ -200,11 +208,10 @@ export function useRegisterMutation() {
 export const TestLoginDocument = gql`
     query TestLogin {
   testLogin {
-    username
-    id
+    ...RegularUser
   }
 }
-    `;
+    ${RegularUserFragmentDoc}`;
 
 export function useTestLoginQuery(options: Omit<Urql.UseQueryArgs<TestLoginQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<TestLoginQuery>({ query: TestLoginDocument, ...options });
