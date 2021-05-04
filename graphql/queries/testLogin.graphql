@@ -1,6 +1,5 @@
 query TestLogin {
     testLogin {
-        username
-        id
+        ...RegularUser
     }
 }
