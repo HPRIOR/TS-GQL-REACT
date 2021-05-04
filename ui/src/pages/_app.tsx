@@ -24,7 +24,17 @@ const client = createClient(
                                     return {testLogin: result.login.user};
                                 }
                             });
+                        },
+                        register: (result: any, args, cache, info) => {
+                            cache.updateQuery({query: TestLoginDocument}, () => {
+                                if (result.register.errors) {
+                                    return result;
+                                } else {
+                                    return {testLogin: result.register.user};
+                                }
+                            });
                         }
+                        //
                     }
                 }
             }),
