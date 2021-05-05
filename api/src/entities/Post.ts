@@ -11,19 +11,19 @@ Also ObjectTypes for gql
 @ObjectType()
 @Entity()
 export class Post extends BaseEntity {
-    @Field(() => Int)
-    @PrimaryGeneratedColumn()
-    id!: number;
+  @Field(() => Int)
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-    @Field(() => String)
-    @CreateDateColumn({type: "date"})
-    createAt: Date;
+  @Field(() => String)
+  @CreateDateColumn({type: "date"})
+  createAt: Date;
 
-    @Field(() => String)
-    @UpdateDateColumn()
-    updatedAt: Date;
+  @Field(() => String)
+  @UpdateDateColumn()
+  updatedAt: Date;
 
-    @Field(() => String)
-    @Column({type: "text"})
-    title!: string;
+  @Field(() => String)
+  @Column({type: "text"})
+  title!: string;
 }
