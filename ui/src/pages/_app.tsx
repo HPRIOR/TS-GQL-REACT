@@ -3,7 +3,7 @@ import '../styles/globals.css';
 import {createClient, dedupExchange, fetchExchange, Provider} from "urql";
 import {NavBar} from "../components/NavBar";
 import {cacheExchange} from "@urql/exchange-graphcache";
-import {LogoutDocument, TestLoginDocument} from "../generatedTypes/graphql";
+import {TestLoginDocument} from "../generatedTypes/graphql";
 
 const client = createClient(
   {
@@ -16,12 +16,12 @@ const client = createClient(
       cacheExchange({
         updates: {
           Mutation: {
-            logout: (result: any, args, cache, info) => {
+            logout: (result: any, args, cache, _) => {
               cache.updateQuery({query: TestLoginDocument }, () => {
                 return {testLogin: null};
               })
             },
-            login: (result: any, args, cache, info) => {
+            login: (result: any, args, cache, _) => {
               cache.updateQuery({query: TestLoginDocument}, () => {
                 if (result.login.errors) {
                   return result;
@@ -30,7 +30,7 @@ const client = createClient(
                 }
               });
             },
-            register: (result: any, args, cache, info) => {
+            register: (result: any, args, cache, _) => {
               cache.updateQuery({query: TestLoginDocument}, () => {
                 if (result.register.errors) {
                   return result;
