@@ -1,28 +1,29 @@
 import 'reflect-metadata';
 import express from 'express';
-import {ApolloServer} from "apollo-server-express";
-import {buildSchema} from "type-graphql";
-import {PostResolver} from "./resolvers/postResolver";
-import {UserResolver} from "./resolvers/userResolver";
+import { ApolloServer } from "apollo-server-express";
+import { buildSchema } from "type-graphql";
+import { PostResolver } from "./resolvers/postResolver";
+import { UserResolver } from "./resolvers/userResolver";
 import redis from 'redis';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
-import {dbPass, sessionSecret} from "./secrets";
-import {__prod__, COOKIE_NAME} from './constants';
+import { dbPass, sessionSecret } from "./secrets";
+import { __prod__, COOKIE_NAME } from './constants';
 import cors from 'cors';
-import {createConnection} from "typeorm";
-import {User} from "./entities/User";
-import {Post} from "./entities/Post";
+import { createConnection } from "typeorm";
+import { User } from "./entities/User";
+import { Post } from "./entities/Post";
+import { sendEmail } from "./utils/sendEmail";
+import { isAuth } from "./middleware/isAuth";
 
 const main = async () => {
-
   const conn = await createConnection({
     type: 'postgres',
     database: 'lireddit2',
     username: 'postgres',
     password: dbPass,
     logging: true,
-    synchronize: true,
+    synchronize: true, // syncs orm with db
     entities: [Post, User]
   });
 
@@ -72,6 +73,7 @@ const main = async () => {
      Apollo allows us to share context throughout the resolvers. orm.em allows resolvers to interact with
      the db orm. we can also pass through request and response objects. This allows us to determine session cookies
      which are resolved previous middleware above (app.use(session...) see sessions-explained.txt
+     Passing orm.em is not necessary when using type orm, types have methods for interacting with db
     */
     context: ({req, res}) => ({
       req,

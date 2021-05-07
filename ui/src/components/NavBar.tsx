@@ -1,15 +1,18 @@
 import React from 'react';
-import {Box, Button, Flex, Link} from "@chakra-ui/react";
+import { Box, Button, Flex, Link } from "@chakra-ui/react";
 import NextLink from 'next/link';
-import {useLogoutMutation, useTestLoginQuery} from "../generatedTypes/graphql";
+import { useLogoutMutation, useTestLoginQuery } from "../generatedTypes/graphql";
+import { onServer } from "../utils/onServer";
 
 interface NavBarProps {
 
 }
 
 export const NavBar: React.FC<NavBarProps> = (props) => {
-  const [{data, fetching}] = useTestLoginQuery();
-  const [{fetching: logoutFetching} ,logout] = useLogoutMutation();
+  const [{data, fetching}] = useTestLoginQuery({
+    pause: onServer()
+  });
+  const [{fetching: logoutFetching}, logout] = useLogoutMutation();
   let body = null;
   if (fetching) {
 

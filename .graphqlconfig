@@ -1,5 +1,5 @@
 {
-  "name": "API Schema",
+  "name": "Untitled GraphQL Schema",
   "schemaPath": "graphql/schema.graphql",
   "extensions": {
     "endpoints": {
