@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from "type-graphql";
+import { Field, ObjectType } from 'type-graphql';
 import {
   BaseEntity,
   Column,
@@ -6,9 +6,9 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
-} from "typeorm";
-import { User } from "./User";
+  UpdateDateColumn,
+} from 'typeorm';
+import { User } from './User';
 
 /*
 These are the programmatic entities which correspond to database tables in postgres
@@ -25,16 +25,15 @@ export class Post extends BaseEntity {
   id!: number;
 
   @Field()
-  @Column({type: "text"})
+  @Column({ type: 'text' })
   title!: string;
 
   @Field()
-  @Column({type: "text"})
+  @Column({ type: 'text' })
   text!: string;
 
-
   @Field()
-  @Column({type: "int", default: 0})
+  @Column({ type: 'int', default: 0 })
   points!: number;
 
   @Field()
@@ -44,10 +43,9 @@ export class Post extends BaseEntity {
   @ManyToOne(() => User, user => user.posts)
   creator: User;
 
-
   @Field(() => String)
-  @CreateDateColumn({type: "date"})
-  createAt: Date;
+  @CreateDateColumn({})
+  createdAt: Date;
 
   @Field(() => String)
   @UpdateDateColumn()

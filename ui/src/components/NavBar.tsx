@@ -1,23 +1,20 @@
 import React from 'react';
-import { Box, Button, Flex, Link } from "@chakra-ui/react";
+import { Box, Button, Flex, Link } from '@chakra-ui/react';
 import NextLink from 'next/link';
-import { useLogoutMutation, useTestLoginQuery } from "../generatedTypes/graphql";
-import { onServer } from "../utils/onServer";
+import { useLogoutMutation, useTestLoginQuery } from '../generatedTypes/graphql';
+import { onServer } from '../utils/onServer';
 
-interface NavBarProps {
+interface NavBarProps {}
 
-}
-
-export const NavBar: React.FC<NavBarProps> = (props) => {
-  const [{data, fetching}] = useTestLoginQuery({
-    pause: onServer()
+export const NavBar: React.FC<NavBarProps> = props => {
+  const [{ data, fetching }] = useTestLoginQuery({
+    pause: onServer(),
   });
-  const [{fetching: logoutFetching}, logout] = useLogoutMutation();
+  const [{ fetching: logoutFetching }, logout] = useLogoutMutation();
   let body = null;
   if (fetching) {
-
   } else if (!data?.testLogin) {
-    body =
+    body = (
       <>
         <NextLink href={'/login'}>
           <Link color={'white'} mr={2}>
@@ -25,22 +22,24 @@ export const NavBar: React.FC<NavBarProps> = (props) => {
           </Link>
         </NextLink>
         <NextLink href={'/register'}>
-          <Link color={'white'}>
-            Register
-          </Link>
+          <Link color={'white'}>Register</Link>
         </NextLink>
-      </>;
+      </>
+    );
   } else {
-    body =
+    body = (
       <Flex>
         <Box mr={4}>{data.testLogin.username}</Box>
-        <Button isLoading={logoutFetching} onClick={() => logout()} variant={'link'}>Logout</Button>
-      </Flex>;
+        <Button isLoading={logoutFetching} onClick={() => logout()} variant={'link'}>
+          Logout
+        </Button>
+      </Flex>
+    );
   }
   return (
     <>
-      <Flex bg={'tomato'} p={4}>
-        <Box bg="tomato" ml={'auto'}>
+      <Flex bg={'teal'} p={4}>
+        <Box bg="teal" ml={'auto'}>
           {body}
         </Box>
       </Flex>

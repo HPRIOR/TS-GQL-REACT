@@ -1,57 +1,58 @@
 # This file was generated based on ".graphqlconfig". Do not edit manually.
 
 schema {
-    query: Query
-    mutation: Mutation
+  query: Query
+  mutation: Mutation
 }
 
 type FieldError {
-    message: String!
+  message: String!
 }
 
 type Mutation {
-    createPost(input: PostInput!): Post!
-    deletePost(id: Int!): Boolean
-    login(options: UsernamePasswordInput!): UserResponse!
-    logout: Boolean!
-    register(options: UsernamePasswordInput!): UserResponse!
-    updatePost(id: Int!, title: String): Post
+  createPost(input: PostInput!): Post!
+  deletePost(id: Int!): Boolean
+  login(options: UsernamePasswordInput!): UserResponse!
+  logout: Boolean!
+  register(options: UsernamePasswordInput!): UserResponse!
+  updatePost(id: Int!, title: String): Post
 }
 
 type Post {
-    createAt: String!
-    creatorId: Float!
-    id: Float!
-    points: Float!
-    text: String!
-    title: String!
-    updatedAt: String!
+  createdAt: String!
+  creatorId: Float!
+  id: Float!
+  points: Float!
+  text: String!
+  textSnippet: String!
+  title: String!
+  updatedAt: String!
 }
 
 type Query {
-    post(id: Int!): Post
-    posts: [Post!]!
-    testLogin: User
+  post(id: Int!): Post
+  posts(cursor: String, limit: Int!): [Post!]!
+  testLogin: User
 }
 
 type User {
-    createdAt: String!
-    id: Float!
-    updatedAt: String!
-    username: String!
+  createdAt: String!
+  id: Float!
+  updatedAt: String!
+  username: String!
 }
 
 type UserResponse {
-    errors: [FieldError!]
-    user: User
+  errors: [FieldError!]
+  user: User
 }
 
 input PostInput {
-    text: String!
-    title: String!
+  text: String!
+  title: String!
 }
 
 input UsernamePasswordInput {
-    password: String!
-    username: String!
+  password: String!
+  username: String!
 }

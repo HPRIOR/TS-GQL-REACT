@@ -2,7 +2,7 @@ mutation CreatePost($input: PostInput!) {
     createPost(input: $input) {
         text
         title
-        createAt
+        createdAt
         creatorId
     }
 }

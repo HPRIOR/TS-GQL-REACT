@@ -23,7 +23,7 @@ export const Login: React.FC<LoginProps> = ({}) => {
       return response;
     } else if (response.data?.login.user) {
       setErrors([]);
-      if (typeof router.query.next) {
+      if (router.query.next) {
         await router.push('' + router.query.next);
       } else {
         await router.push('/');
